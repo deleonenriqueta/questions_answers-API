@@ -1,7 +1,7 @@
 const fs = require('fs');
 const format = require('pg-format');
 const fastcsv = require('fast-csv');
-const pool = require('./pgdbTest');
+const pool = require('./pgdb.js');
 const {processPhotos} = require('./queries.js');
 
 pool.connect((err) => {
