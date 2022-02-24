@@ -1,38 +1,52 @@
+const pullAllQuestions = require('./database/indexDB.js');
 const express = require('express');
-const app = express()
+const app = express();
+
 
 // app.post('/test', (req, res) => {
 //   res.sendStatus(200);
 // });
 
-app.post('/answers', (req, res) => {
+app.get('/qa/questions', (req, res) => {
+  var productId = req.query.product_id;
+  pullAllQuestions.pullAllQuestions(productId, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send({err});
+    } else {
+      result = JSON.stringify(result);
+      res.send(result);
+    }
+  })
+});
+
+app.get('/qa/questions/:question_id/answers', (req, res) => {
+  var questionId = req.params.question_id;
   res.send({});
 });
 
-app.post('/questions', (req, res) => {
+app.post('/qa/questions', (req, res) => {
+  var questionParams = req.query;
   res.send({});
 });
 
-app.get('/answers', (req, res) => {
-  res.send({});
-});
 
-app.get('/questions', (req, res) => {
-  // const product_id = req.body;
-  // if(!product_id) {
-  //   res.sendStatus(400);
-  //   return;
-  // }
-  res.send({results: {a: '123'}});
-});
 
-app.patch('/reportAnswer', (req, res) => {
-  res.send({});
-});
+/**
+ * BELOW IS THE WORK TO BE COMPLETED IF TIME ALLOWS
+ */
 
-app.patch('/reportQuestion', (req, res) => {
-  res.send({});
-});
+// app.post('/answers', (req, res) => {
+//   res.send({});
+// });
+
+// app.patch('/reportAnswer', (req, res) => {
+//   res.send({});
+// });
+
+// app.patch('/reportQuestion', (req, res) => {
+//   res.send({});
+// });
 
 
 module.exports = app;
