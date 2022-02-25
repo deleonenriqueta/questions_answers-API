@@ -8,8 +8,8 @@ const processQuestions = (data) => {
   let reported        = Number(data[6]);
   let helpful         = Number(data[7]);
 
-  var text = 'INSERT INTO questions (question_id, product_id, question_body, question_date, asker_name, asker_email, reported, question_helpfulness) VALUES ';
-  var values = [id, product_id, body, date_written, asker_name, asker_email, reported, helpful];
+  var text = 'INSERT INTO questions (question_id, product_id, question_body, question_date, asker_name, reported, question_helpfulness) VALUES ';
+  var values = [id, product_id, body, date_written, asker_name, reported, helpful];
 
   return {text, values};
 }
@@ -24,8 +24,8 @@ const processAnswers = (data) => {
   let reported        = Number(data[6]);
   let helpful         = Number(data[7]);
 
-  var text = 'INSERT INTO answers (id, question_id, body, date, answerer_name, answerer_email, reported, helpfulness) VALUES ';
-  var values = [id, question_id, body, date_written, answerer_name, answerer_email, reported, helpful];
+  var text = 'INSERT INTO answers (id, question_id, body, date, answerer_name, helpfulness, reported ) VALUES ';
+  var values = [id, question_id, body, date_written, answerer_name, helpful, reported];
 
   return {text, values};
 }
@@ -35,7 +35,7 @@ const processPhotos = (data) => {
   let answer_id   = Number(data[1]);
   let url         = data[2];
 
-  var text = 'INSERT INTO answers_photos (photo_id, answer_id, url) VALUES ';
+  var text = `INSERT INTO answers_photos (photo_id, answer_id, url) VALUES `;
   var values = [photo_id, answer_id, url];
 
   return {text, values};
