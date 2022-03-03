@@ -13,66 +13,57 @@ pool.connect((err) => {
   }
 });
 
-const photoQuery = (answerId, urlArr, cb) => {
-  var photos = JSON.stringify(urlArr);
-  var query = `UPDATE answers SET photos = '${photos}' WHERE id = '${answerId}'`;
-  cb(null, query);
-}
-
-const insertPhotos = (answerId, urlArr, cb) => {
-  var photos = JSON.stringify(urlArr);
-  // console.log(urlArr);
-  pool.query(`UPDATE answers SET photos = '${photos}' WHERE id = '${answerId}'`, (err, res) => {
+const multiInsert = (text, dataArr, counter) => {
+  pool.query(format(text + ' %L', dataArr), (err, res) => {
     if (err) {
-      cb(err, null);
+      console.log('ERROR inserting row into DB: ', err);
     } else {
-      cb(null, res);
+      console.log('Inserted up to: ', counter);
     }
-  })
+  });
 }
 
 const readCSV = () => {
-  var currentId;
   var counter = 0;
   var urlArr = [];
-  var query = {};
-  var answer_id;
-  var stream = fs.createReadStream('../data/answers_photos.csv');
+  var valuesArr = [];
+  var photoObj = {};
+  var stream = fs.createReadStream('database/ETL/addingPhotos.js');
   var csvStream = fastcsv
     .parse()
     .on('data', (data) => {
       csvStream.pause();
+      if (valuesArr.length === 900) {
+        var text = `INSERT INTO answers_photos (photo_id, answer_id, url) VALUES `;
+        multiInsert(text, valuesArr, counter, (err, result) => {
+          if (err) {
+            throw err;
+          } else {
+            console.log(result);
+            valuesArr = [];
+          }
+        })
+      }
       if (counter !== 0) {
-        if (currentId === undefined) {
-          currentId = data[1];
-        }
         var id          = Number(data[0]);
         var answer_id   = Number(data[1]);
         var url         = data[2];
-        if (currentId === id) {
-          urlArr.push(url);
-        } else {
-          insertPhotos(currentId, urlArr, (err, res) => {
-            if (err) {
-              console.log(err);
-            } else {
-              console.log('Completed insert for answer_id: ', currentId);
-              currentId = id;
-              urlArr = [];
-              urlArr.push(url);
-            }
-          })
-        }
+        valuesArr.push([id, answer_id, url]);
       }
-      counter++;
-      csvStream.resume();
+
+        counter++;
+        csvStream.resume();
     })
     .on('end', () => {
-      insertPhotos(currentId, urlArr, (err, res) => {
-        console.log('Completed insert for answer_id: ', currentId);
-      });
-      console.log('Job is done!');
-      return;
+      var text = `INSERT INTO answers_photos (photo_id, answer_id, url) VALUES `;
+      multiInsert(text, valuesArr, counter, (err, result) => {
+        if (err) {
+          throw err;
+        } else {
+          console.log('Job is done!');
+        }
+      })
+
     })
     .on('error', (err) => {
       console.log(err);

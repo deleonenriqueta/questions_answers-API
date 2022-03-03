@@ -23,21 +23,11 @@ const multiInsert = (text, dataArr, counter) => {
   });
 }
 
-const photosInsert = (text, dataArr) => {
-  pool.query(format(text + ' %L', dataArr), (err, res) => {
-    if (err) {
-      console.log('ERROR inserting row into DB: ', err);
-    } else {
-      console.log('Inserted up to: ', counter);
-    }
-  });
-}
-
 const readCSV = () => {
   var counter = 0;
   var dataArr = [];
   var query = {};
-  var stream = fs.createReadStream('../data/answers_photos.csv');
+  var stream = fs.createReadStream('database/data/answers_photos.csv');
   var csvStream = fastcsv
     .parse()
     .on('data', (data) => {
