@@ -7,39 +7,29 @@ const app = express();
 //   res.sendStatus(200);
 // });
 
-app.get('/qa/questions', (req, res) => {
-  var finalQuestions = [];
-  dbQueries.pullAllQuestions(req.query.product_id, (err, result) => {
-    var questions = result.results;
-    if (err) {
-      res.send({err});
-    } else {
-      let applyAnswers = async (questions) => {
+app.get('/qa/questions', async (req, res) => {
+  try {
+    const questions = await dbQueries.pullAllQuestions(req.query.product_id);
+    const questionsAndAnswers = async (questions) => {
+      let promises = [];
+      for (let index = 0; index < questions.length; index ++) {
+        promises.push(await dbQueries.pullAllAnswers(questions[index]));
       }
-
-
-      dbQueries.pullAllAnswers(questions, (err, result) => {
-        if (err) {
-          throw err;
-        } else {
-          res.send(result);
-        }
+      Promise.all(promises)
+      .then((values) => {
+        res.send({product_id: req.query.product_id,
+                  results: values})
       })
     }
-    //   for (var question of result.results) {
-    //   dbQueries.pullAllAnswers(question.question_id, (err, result) => {
-    //     if (err) {
-    //       throw err;
-    //     } else {
-    //       console.log(result.answers);
-    //       question.answers = result.answers;
-    //       promises.push(Promise(question));
-    //     }
-    //   });
-    // }
-    // result = JSON.stringify(result);
-    // res.send(result);
-  })
+    questionsAndAnswers(questions);
+  } catch (error) {
+    res.send({ERROR: error});
+  }
+});
+
+app.post('/qa/questions', (req, res) => {
+  var questionParams = req.query;
+  res.send({});
 });
 
 app.get('/qa/questions/:question_id/answers', (req, res) => {
@@ -55,12 +45,16 @@ app.get('/qa/questions/:question_id/answers', (req, res) => {
   })
 });
 
-app.post('/qa/questions', (req, res) => {
-  var questionParams = req.query;
-  res.send({});
-});
-
-
+app.get('/test', async (req, res) => {
+  try {
+    let productId = req.query.question_id;
+    const questions = await dbQueries.pullAllAnswers(productId);
+    const data = await {result: questions};
+    res.send(data);
+  } catch (err) {
+    res.send({error: err})
+  }
+})
 
 /**
  * BELOW IS THE WORK TO BE COMPLETED IF TIME ALLOWS
