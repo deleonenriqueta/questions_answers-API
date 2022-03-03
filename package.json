@@ -6,7 +6,10 @@
   "scripts": {
     "startDB": "brew services start postgresql",
     "stopDB": "brew services stop postgresql",
-    "server": "nodemon ./server/server.js"
+    "server": "nodemon ./server/server.js",
+    "insert": "node database/ETL/index.js",
+    "insertPhotos": "node database/ETL/addingPhotos.js",
+    "test": "node tests/app.test.js"
   },
   "repository": {
     "type": "git",
