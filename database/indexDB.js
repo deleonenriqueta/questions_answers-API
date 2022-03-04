@@ -2,12 +2,8 @@ const pool = require('./ETL/pgdb.js');
 
 const pullAllQuestions = async (productId) => {
   try {
-    const questions = await pool.query(`SELECT  question_id,
-                                                question_body,
-                                                question_date,
-                                                asker_name,
-                                                question_helpfulness,
-                                                reported
+    const questions = await pool.query(`SELECT  question_id, question_body, question_date,
+                                                asker_name, question_helpfulness, reported
                                         FROM    questions
                                         WHERE   product_id = ${productId}
                                         AND     reported = 'false'`);
@@ -19,13 +15,10 @@ const pullAllQuestions = async (productId) => {
 
 const pullAllAnswers = async (question) => {
   try {
-    const answers = await pool.query(`SELECT  id, body, date,
-                                              answerer_name,
-                                              helpfulness
-                                      FROM answers
-                                      WHERE question_id = ${question.question_id}
-                                      AND reported = 'false'`);
-    console.log(answers.rows);
+    const text = `SELECT  id, body, date, answerer_name, helpfulness
+                  FROM answers WHERE question_id = ($1) AND reported = 'false'`;
+    const values = [question.question_id];
+    const answers = await pool.query(text, values);
     const transformedAnswers = await transformAnswers(answers.rows);
     const finalAnswers = await pullAllPhotos(answers.rows);
     question.answers = transformedAnswers;
@@ -40,7 +33,6 @@ const transformAnswers = async (answerObj) => {
   for (var answer of answerObj) {
     newAnswerObj[answer.id] = answer;
   }
-  console.log('NEW ANSWER OBJ: ', newAnswerObj);
   return newAnswerObj;
 }
 
@@ -75,7 +67,20 @@ const photosQuery = async (answer) => {
   }
 }
 
+const insertQuestion = async (params) => {
+  try {
+    const question_id = Number((await pool.query('SELECT COUNT(*) FROM questions')).rows[0].count) + 1;
+    const question_date = new Date();
+    const result = await pool.query(`INSERT INTO questions (product_id, question_id, question_body, question_date, asker_name, question_helpfulness, reported)
+                                     VALUES (${params.product_id}, ${question_id}, '${params.body}', '${question_date}', '${params.name}', 0, false)`);
+    return result.rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   pullAllQuestions,
   pullAllAnswers,
+  insertQuestion
 }
