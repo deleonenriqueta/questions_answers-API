@@ -27,9 +27,13 @@ app.get('/qa/questions', async (req, res) => {
   }
 });
 
-app.post('/qa/questions', (req, res) => {
-  var questionParams = req.query;
-  res.send({});
+app.post('/qa/questions', async (req, res) => {
+  try {
+    const result = await dbQueries.insertQuestion(req.query);
+    res.sendStatus(201);
+  } catch (error) {
+    res.send({ERROR: error});
+  }
 });
 
 app.get('/qa/questions/:question_id/answers', (req, res) => {
