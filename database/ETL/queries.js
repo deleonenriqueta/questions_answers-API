@@ -2,7 +2,7 @@ const processQuestions = (data) => {
   let id              = Number(data[0]);
   let product_id      = Number(data[1]);
   let body            = data[2];
-  let date_written    = data[3];
+  let date_written    = new Date(Number(data[3]));
   let asker_name      = data[4];
   let asker_email     = data[5];
   let reported        = Number(data[6]);
@@ -18,7 +18,7 @@ const processAnswers = (data) => {
   let id              = Number(data[0]);
   let question_id     = Number(data[1]);
   let body            = data[2];
-  let date_written    = data[3];
+  let date_written    = new Date(Number(data[3]));
   let answerer_name   = data[4];
   let answerer_email  = data[5];
   let reported        = Number(data[6]);
