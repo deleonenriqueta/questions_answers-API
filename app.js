@@ -7,9 +7,15 @@ const app = express();
 //   res.sendStatus(200);
 // });
 
+app.use(express.json());
+
 app.get('/qa/questions', async (req, res) => {
   try {
-    const questions = await dbQueries.pullAllQuestions(req.query.product_id);
+    if (req.query.product_id === undefined) {
+      res.sendStatus(400);
+      return;
+    }
+    const questions = await dbQueries.pullAllQuestions(Number(req.query.product_id));
     const questionsAndAnswers = async (questions) => {
       let promises = [];
       for (let index = 0; index < questions.length; index ++) {
@@ -29,10 +35,17 @@ app.get('/qa/questions', async (req, res) => {
 
 app.post('/qa/questions', async (req, res) => {
   try {
-    const result = await dbQueries.insertQuestion(req.query);
-    res.sendStatus(201);
+    const hasAllParams = await dbQueries.paramsCheck(req.query);
+    if (!hasAllParams){
+      res.sendStatus(400);
+      return;
+    } else {
+      const result = await dbQueries.insertQuestion(req.query);
+      return;
+    }
   } catch (error) {
     res.send({ERROR: error});
+    return;
   }
 });
 
