@@ -1,11 +1,12 @@
 const pg = require('pg');
+require('dotenv').config();
 
 var config = {
   user: 'root',
   database: 'sdc',
-  host: 'localhost',
+  host: process.env.SDC_IP,
+  password: process.env.SDC_PASS,
   port: 5432
-  // ,max: 10, idleTimeoutMillis: 30000
 }
 
 const pool = new pg.Pool(config);
