@@ -24,11 +24,14 @@
   "homepage": "https://github.com/rpp32-sdc-saline/questions_answers-API#readme",
   "dependencies": {
     "csv-parse": "^5.0.4",
+    "dotenv": "^16.0.0",
     "fast-csv": "^4.3.6",
     "newrelic": "^8.8.0",
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
-    "pg-format": "^1.0.4"
+    "pg-format": "^1.0.4",
+    "pm2": "^5.2.0",
+    "redis": "^4.0.4"
   },
   "devDependencies": {
     "babel": "^6.23.0",

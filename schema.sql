@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS sdc;
 
-CREATE DATABASE sdc;
+CREATE DATABASE sdc WITH OWNER = root;
 
 \connect sdc;
 
@@ -25,7 +25,7 @@ CREATE TABLE answers (
 );
 
 CREATE TABLE answers_photos (
-  photo_id        INTEGER PRIMARY KEY NOT NULL,
+  photo_id           INTEGER PRIMARY KEY NOT NULL,
   answer_id          INTEGER             NOT NULL,
   url                TEXT                NOT NULL
 );
