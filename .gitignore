@@ -1,3 +1,8 @@
 config.js
 node_modules/
 data/
+*.pem
+*.pem.pub
+*.env
+*.rdb
+sdcDump.sql
