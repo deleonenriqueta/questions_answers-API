@@ -9,8 +9,11 @@ const app = express();
 
 app.use(express.json());
 
+app.use('/', express.static('files'));
+
 app.get('/qa/questions', async (req, res) => {
   try {
+    console.log('Req_ID: ', req.query);
     if (req.query.product_id === undefined) {
       res.sendStatus(400);
       return;
