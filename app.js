@@ -27,6 +27,7 @@ app.use('/', express.static('files'));
 app.get('/qa/questions', async (req, res) => {
   try {
     const allData = await dbQueries.allData(Number(req.query.product_id));
+    await client.set(req.query.product_id, JSON.stringify(allData));
     res.send(allData);
   } catch (error) {
     res.send({ERROR: error});
@@ -48,6 +49,16 @@ app.post('/qa/questions', async (req, res) => {
     return;
   }
 });
+
+// app.get('qa/questions/cachePrep', cache, async, (req, res) => {
+//   try {
+//     var key = Math.floor(Math.random()*1000011);
+//     key = key.toString();
+
+//   } else (err) {
+//     res.status(400).send(err);
+//   }
+// })
 
 // app.get('/qa/questions/:question_id/answers', (req, res) => {
 //   var questionId = req.params.question_id;
