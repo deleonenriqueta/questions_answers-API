@@ -14,7 +14,6 @@ client.on('error', (err) => console.log('Redis Client Error: ', err));
 const cache = async (req, res, next) => {
   try {
     const productID = req.query.product_id;
-    console.log('Here');
     const queryResult = await client.get(req.query.product_id);
     if (queryResult) {
       res.send(queryResult);
