@@ -76,5 +76,5 @@ const allData = async (product_id) => {
 module.exports = {
   insertQuestion,
   paramsCheck,
-  allData
+  allData,
 }

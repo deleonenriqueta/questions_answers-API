@@ -1,11 +1,24 @@
 const dbQueries = require('./database/indexDB.js');
 const express = require('express');
+const client = require('../redis.js');
 const app = express();
 
 
-// app.post('/test', (req, res) => {
-//   res.sendStatus(200);
-// });
+(async () => {
+  await client.connect();
+  client.on('error', (err) => console.log('Redis Client Error: ', err));
+})();
+
+
+const cache = async (req, res, next) => {
+  const productID = req.query.product_id;
+  const queryResult = await client.get(req.query.product_id);
+  if (queryResult) {
+    res.send(queryResult);
+  } else {
+    next();
+  }
+}
 
 app.use(express.json());
 
