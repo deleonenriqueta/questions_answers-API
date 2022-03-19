@@ -55,15 +55,16 @@ app.post('/qa/questions', async (req, res) => {
   }
 });
 
-// app.get('qa/questions/cachePrep', cache, async, (req, res) => {
-//   try {
-//     var key = Math.floor(Math.random()*1000011);
-//     key = key.toString();
-
-//   } else (err) {
-//     res.status(400).send(err);
-//   }
-// })
+app.get('qa/questions/test', cache, async, (req, res) => {
+  try {
+    const productId = Math.floor(Math.random() * 1000012)
+    const allData = await dbQueries.allData(productId);
+    await client.set(productId, JSON.stringify(allData));
+    res.send(allData);
+  } catch (error) {
+    res.send({ERROR: error});
+  }
+})
 
 // app.get('/qa/questions/:question_id/answers', (req, res) => {
 //   var questionId = req.params.question_id;
