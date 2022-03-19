@@ -32,4 +32,4 @@ const warmCache = async () => {
   }
   console.log('All done!');
   return;
-}
+}();
