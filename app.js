@@ -55,7 +55,7 @@ app.post('/qa/questions', async (req, res) => {
   }
 });
 
-app.get('qa/questions/test', cache, async, (req, res) => {
+app.get('qa/questions/test', cache, async (req, res) => {
   try {
     const productId = Math.floor(Math.random() * 1000012)
     const allData = await dbQueries.allData(productId);
