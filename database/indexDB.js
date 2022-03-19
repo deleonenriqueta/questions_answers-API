@@ -10,7 +10,7 @@ const paramsCheck = (params) => {
     }
     return true;
   } catch (error) {
-
+    return error;
   }
 }
 
@@ -22,7 +22,7 @@ const insertQuestion = async (params) => {
                                      VALUES (${params.product_id}, ${question_id}, '${params.body}', '${question_date}', '${params.name}', 0, false)`);
     return result.rows;
   } catch (error) {
-    throw error;
+    return error;
   }
 }
 const allData = async (product_id) => {
@@ -69,7 +69,7 @@ const allData = async (product_id) => {
     }
     return result;
   } catch (error) {
-    throw error;
+    return error;
   }
 }
 

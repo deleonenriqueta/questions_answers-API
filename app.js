@@ -5,26 +5,33 @@ const app = express();
 
 
 (async () => {
+  console.log('connecting client')
   await client.connect();
-  client.on('error', (err) => console.log('Redis Client Error: ', err));
 })();
 
+client.on('error', (err) => console.log('Redis Client Error: ', err));
 
 const cache = async (req, res, next) => {
-  const productID = req.query.product_id;
-  const queryResult = await client.get(req.query.product_id);
-  if (queryResult) {
-    res.send(queryResult);
-  } else {
-    next();
+  try {
+    const productID = req.query.product_id;
+    console.log('Here');
+    const queryResult = await client.get(req.query.product_id);
+    if (queryResult) {
+      res.send(queryResult);
+    } else {
+      next();
+    }
+  } catch (err) {
+    res.send({ERROR: err});
   }
+
 }
 
 app.use(express.json());
 
 app.use('/', express.static('files'));
 
-app.get('/qa/questions', async (req, res) => {
+app.get('/qa/questions', cache, async (req, res) => {
   try {
     const allData = await dbQueries.allData(Number(req.query.product_id));
     await client.set(req.query.product_id, JSON.stringify(allData));
@@ -46,7 +53,6 @@ app.post('/qa/questions', async (req, res) => {
     }
   } catch (error) {
     res.send({ERROR: error});
-    return;
   }
 });
 
@@ -72,17 +78,6 @@ app.post('/qa/questions', async (req, res) => {
 //     }
 //   })
 // });
-
-// app.get('/test', async (req, res) => {
-//   try {
-//     let productId = req.query.question_id;
-//     const questions = await dbQueries.pullAllAnswers(productId);
-//     const data = await {result: questions};
-//     res.send(data);
-//   } catch (err) {
-//     res.send({error: err})
-//   }
-// })
 
 /**
  * BELOW IS THE WORK TO BE COMPLETED IF TIME ALLOWS
