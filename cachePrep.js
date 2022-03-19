@@ -14,7 +14,7 @@ const randomProduct = () => {
   return ((Math.floor(Math.random() * (idEnd - idStart))) + idStart);
 }
 
-const cacheValue = async () => {
+const cacheValue = async (counter) => {
   const randomId = Number(randomProduct());
   const randomValue = await db.allData(randomId);
   await client.set(randomId, randomValue);
@@ -27,7 +27,7 @@ const cacheValue = async () => {
 const warmCache = async () => {
   var counter = 0;
   while (counter < 70000) {
-    cacheValue();
+    cacheValue(counter);
     counter++;
   }
   console.log('All done!');
