@@ -19,3 +19,13 @@ const cacheValue = async () => {
   const randomValue = await db.allData(randomId);
   await client.set(randomId, randomValue);
 }
+
+const warmCache = async () => {
+  var counter = 0;
+  while (counter < 70000) {
+    cacheValue();
+    counter++;
+  }
+  console.log('All done!');
+  return;
+}
