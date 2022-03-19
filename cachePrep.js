@@ -18,6 +18,10 @@ const cacheValue = async () => {
   const randomId = Number(randomProduct());
   const randomValue = await db.allData(randomId);
   await client.set(randomId, randomValue);
+  if (counter % 100) {
+    console.log(counter);
+  }
+  return;
 }
 
 const warmCache = async () => {
