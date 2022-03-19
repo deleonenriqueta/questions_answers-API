@@ -1,6 +1,6 @@
 const dbQueries = require('./database/indexDB.js');
 const express = require('express');
-const client = require('../redis.js');
+const client = require('./redis.js');
 const app = express();
 
 
