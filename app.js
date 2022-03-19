@@ -16,7 +16,7 @@ const cache = async (req, res, next) => {
     const productID = req.query.product_id;
     const queryResult = await client.get(req.query.product_id);
     if (queryResult) {
-      res.send(queryResult);
+      res.send(JSON.parse(queryResult));
     } else {
       next();
     }
